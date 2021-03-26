@@ -7,6 +7,9 @@ typedef unsigned char uint8;
 #define SINGLE_ERROR 1
 #define DOUBLE_ERROR 2
 
+static const char *ERROR_TYPE[] =  {
+    "NO ERROR", "SINGLE ERROR", "DOUBLE ERROR",
+};
 
 uint8 calc_hamming(uint32 value);
 uint8 insert_error(uint32 value, uint32 error);
@@ -22,6 +25,8 @@ uint8 calc_hamming(uint32 value)
 
     for(ii=0; ii<32; ii++)
         D[ii] = (value >> ii) & 0x1;
+    
+    /* BCH EDAC: https://www.gaisler.com/doc/gr712rc-usermanual.pdf Section: 5.10.1  - Page:64 */
     
     CB[0] =D[0]^D[4]^D[ 6]^D[ 7]^D[ 8]^D[ 9]^D[11]^D[14]^D[17]^D[18]^D[19]^D[21]^D[26]^D[28]^D[29]^D[31];
     CB[1] =D[0]^D[1]^D[ 2]^D[ 4]^D[ 6]^D[ 8]^D[10]^D[12]^D[16]^D[17]^D[18]^D[20]^D[22]^D[24]^D[26]^D[28];
@@ -40,7 +45,7 @@ uint8 calc_hamming(uint32 value)
     return checkbyte;       
 }
 
-uint8 insert_error(uint32 value, uint32 error)
+uint8 insert_hamming_error(uint32 value, uint32 error)
 {
     static uint32 se = 0; /* single error */
     static uint32 de = 0; /* double error */
@@ -78,8 +83,9 @@ void main(void)
         
         for(ii=0; ii<3; ii++)
         {
-            checkbyte[ii] = insert_error(value, ii);
-            printf("Value: 0x%08X CheckByte: 0x%02X ErrorCount: %d \n", value, checkbyte[ii], ii);
+            checkbyte[ii] = insert_hamming_error(value, ii);
+            printf("Value: 0x%08X CheckByte: 0x%02X with \"%s\" \n", 
+                        value, checkbyte[ii], ERROR_TYPE[ii]);
         }
     }
     
