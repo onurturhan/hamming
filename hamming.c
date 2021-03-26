@@ -45,7 +45,7 @@ uint8 calc_hamming(uint32 value)
     return checkbyte;       
 }
 
-uint8 insert_hamming_error(uint32 value, uint32 error)
+uint8 insert_error(uint32 value, uint32 error)
 {
     static uint32 se = 0; /* single error */
     static uint32 de = 0; /* double error */
@@ -83,7 +83,7 @@ void main(void)
         
         for(ii=0; ii<3; ii++)
         {
-            checkbyte[ii] = insert_hamming_error(value, ii);
+            checkbyte[ii] = insert_error(value, ii);
             printf("Value: 0x%08X CheckByte: 0x%02X with \"%s\" \n", 
                         value, checkbyte[ii], ERROR_TYPE[ii]);
         }
