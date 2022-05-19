@@ -68,7 +68,7 @@ uint8 insert_error(uint32 value, uint32 error)
     return cb;
 }
 
-void main(void)
+int main(int argc,  char* argv[])
 {
     uint32 ii,jj;
     uint32 value = 0x00000028; 
@@ -85,5 +85,5 @@ void main(void)
                         value, checkbyte[ii], ERROR_TYPE[ii]);
         }
     }
-    
+    return 0; 
 }
